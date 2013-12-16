@@ -20,7 +20,7 @@ npm install promise-queue
 
 ## Example
 
-```
+```js
 Queue.configure(function () {
     return $.Deferred() || require('vow').promise();
 });
