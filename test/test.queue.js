@@ -64,7 +64,7 @@ describe('queue export', function () {
 
         vm.runInNewContext(queueCode, newGlobal);
 
-        expect(newGlobal.queue).to.be.a('function');
+        expect(newGlobal.Queue).to.be.a('function');
     });
 });
 
