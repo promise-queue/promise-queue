@@ -45,3 +45,6 @@ queue.add(function () {
     doStuffWith(file);
 });
 ```
+
+[Live example](http://jsfiddle.net/RVuEU/)
+
