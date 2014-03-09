@@ -24,9 +24,7 @@ function reset() {
 }
 
 function configure() {
-    Queue.configure(function () {
-        return vow.promise();
-    });
+    Queue.configure(vow.Promise);
 }
 
 describe('queue export', function () {
@@ -82,6 +80,52 @@ describe('queue.configure()', function () {
             }).then(function () {});
         }).to.throw(Error);
     });
+
+    beforeEach(function () {
+        clean();
+        reset();
+    });
+
+    afterEach(function () {
+        delete global.Promise;
+    });
+
+    it('queue.add().then() should not throw an exception if global Promise exists', function () {
+        global.Promise = vow.Promise;
+        clean();
+        reset();
+
+        expect(function () {
+            var queue = new Queue();
+            queue.add(function () {
+                return vow.fulfill(true);
+            }).then(function () {});
+        }).to.not.throw(Error);
+    });
+
+    it('ignores missing `progress` callback', function (done) {
+        Queue.configure(function (handler) {
+            return new vow.Promise(function (resolve, reject) {
+                handler(resolve, reject);
+            });
+        });
+
+        var queue = new Queue();
+        queue.add(function () {
+            return new vow.Promise(function (resolve, reject, notify) {
+                setTimeout(function () {
+                    notify(0);
+                    resolve();
+                }, 0);
+            });
+        }).then(function () {
+                done();
+            }, function () {
+                done(Error('onRejected should not be called'));
+            }, function () {
+                done(Error('onProgressed should not be called'));
+            });
+    });
 });
 
 describe('queue', function () {
@@ -114,7 +158,9 @@ describe('queue', function () {
             var queue = new Queue();
             queue
                 .add(function () {
-                    return vow.promise(true);
+                    return new vow.Promise(function (resolve) {
+                        resolve(true);
+                    });
                 })
                 .then(function (result) {
                     expect(result).to.be.true;
@@ -157,7 +203,9 @@ describe('queue', function () {
 
             queue
                 .add(function () {
-                    return vow.promise(true).then(function () {
+                    return new vow.Promise(function (resolve) {
+                        resolve(true);
+                    }).then(function () {
                         return true;
                     });
                 })
@@ -172,7 +220,9 @@ describe('queue', function () {
 
             queue
                 .add(function () {
-                    return vow.reject(false);
+                    return new vow.Promise(function (resolve, reject) {
+                        reject(false);
+                    });
                 })
                 .then(function () {
                     throw new Error('It should be rejected');
@@ -188,16 +238,14 @@ describe('queue', function () {
 
             queue
                 .add(function () {
-                    var promise = vow.promise();
-
-                    setTimeout(function () {
-                        promise.notify(0);
-                        promise.notify(1);
-                        promise.notify(2);
-                        promise.fulfill();
-                    }, 0);
-
-                    return promise;
+                    return new vow.Promise(function (resolve, reject, notify) {
+                        setTimeout(function () {
+                            notify(0);
+                            notify(1);
+                            notify(2);
+                            resolve();
+                        }, 0);
+                    });
                 })
                 .then(function () {}, function () {}, listener)
                 .then(function () {

@@ -2,7 +2,7 @@
     "author" : "Mikhail Davydov <i@azproduction.ru>",
     "description" : "Promise-based queue",
     "name" : "promise-queue",
-    "version" : "1.0.1",
+    "version" : "2.0.0",
     "contributors" : [
         {
             "name": "Mikhail Davydov",
@@ -12,9 +12,6 @@
     "engines" : {
         "node": ">= 0.8.0"
     },
-    "dependencies" : {
-
-    },
     "devDependencies" : {
         "jshint": "2.1.3",
         "mocha": "1.11.0",
@@ -22,7 +19,7 @@
         "istanbul": "0.1.39",
         "chai": "*",
         "sinon": "*",
-        "vow": "0.3.12",
+        "vow": "0.4.1",
         "sinon-chai": "*",
         "mocha-istanbul": "*",
         "coveralls": "*"
