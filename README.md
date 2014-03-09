@@ -58,4 +58,4 @@ queue.add(function () {
 });
 ```
 
-[Live example](http://jsfiddle.net/RVuEU/)
+[Live example](http://jsfiddle.net/RVuEU/1/)
