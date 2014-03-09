@@ -121,9 +121,9 @@ describe('queue.configure()', function () {
         }).then(function () {
                 done();
             }, function () {
-                done(Error('onRejected should not be called'));
+                done(new Error('onRejected should not be called'));
             }, function () {
-                done(Error('onProgressed should not be called'));
+                done(new Error('onProgressed should not be called'));
             });
     });
 });
