@@ -26,7 +26,7 @@ Or use old-style promises approach:
 Queue.configure(function (handler) {
     var dfd = $.Deferred();
     try {
-        handler(dfd.resolve, dfd.reject, dfd.progress);
+        handler(dfd.resolve, dfd.reject, dfd.notify);
     } catch (e) {
         dfd.reject(e);
     }
