@@ -12,7 +12,7 @@ npm install promise-queue
 
 ## Example
 
-### Configure attempt
+### Configure queue
 
 By default `Queue` tries to use global Promises, but you can specify your own promises.
 
