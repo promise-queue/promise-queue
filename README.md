@@ -34,27 +34,24 @@ Queue.configure(function (handler) {
 });
 ```
 
-### Queue example
+### Queue one by one example
 
 ```js
-// max concurrent - 1
-// max queue - Infinity
-var queue = new Queue(1, Infinity);
+var maxConcurrent = 1;
+var maxQueue = Infinity;
+var queue = new Queue(maxConcurrent, maxQueue);
 
-queue.add(function () {
-    // resolve of this promise will resume next request
-    return downloadTarballFromGithub(url, file);
-})
-.then(function (file) {
-    doStuffWith(file);
-});
-
-queue.add(function () {
-    return downloadTarballFromGithub(url, file);
-})
-// This request will be paused
-.then(function (file) {
-    doStuffWith(file);
+app.get('/version/:user/:repo', function (req, res, next) {
+    queue.add(function () {
+        // Assume that this action is a way too expensive
+        // Call of this function will be delayed on second request
+        return downloadTarballFromGithub(req.params);
+    })
+    .then(parseJson('package.json'))
+    .then(function (package) {
+        res.send(package.version);
+    })
+    .catch(next);
 });
 ```
 
