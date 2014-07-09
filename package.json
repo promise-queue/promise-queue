@@ -2,7 +2,7 @@
     "author" : "Mikhail Davydov <i@azproduction.ru>",
     "description" : "Promise-based queue",
     "name" : "promise-queue",
-    "version" : "2.0.1",
+    "version" : "2.1.1",
     "contributors" : [
         {
             "name": "Mikhail Davydov",

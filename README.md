@@ -10,6 +10,13 @@ Promise-based queue
 npm install promise-queue
 ```
 
+## Interface
+
+ - `new Queue(Number maxConcurrent, Number maxQueued): Queue`
+ - `Queue#add(Function generator): Promise` - adds function argument that generates a promise to the queue
+ - `Queue#getQueueLength(): Number` - returns current length of buffer(added but not started promise generators) `it <= maxQueued`
+ - `Queue#getPendingLength(): Number` - returns number of pending(concurrently running) promises `it <= maxConcurrent`
+
 ## Example
 
 ### Configure queue
@@ -53,6 +60,29 @@ app.get('/version/:user/:repo', function (req, res, next) {
     })
     .catch(next);
 });
+```
+
+### Getting number of pending promises and queue(buffered promises) length
+
+```js
+var maxConcurrent = 1;
+var maxQueue = 1;
+var queue = new Queue(maxConcurrent, maxQueue);
+
+queue.add(function () {
+    queue.getQueueLength() === 0;
+    queue.getPendingLength() === 1;
+    return somePromise();
+});
+
+queue.add(function () {
+    queue.getQueueLength() === 0;
+    queue.getPendingLength() === 0;
+    return somePromise();
+});
+
+queue.getQueueLength() === 1;
+queue.getPendingLength() === 1;
 ```
 
 [Live example](http://jsfiddle.net/RVuEU/1/)
