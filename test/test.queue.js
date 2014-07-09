@@ -256,4 +256,83 @@ describe('queue', function () {
                 .then(done, done);
         });
     });
+
+    describe('getPendingLength', function () {
+
+        it('returns number of pending promises', function (done) {
+            var expectedPendingLength = 10;
+            var pendingNumber = 10;
+            var queue = new Queue(expectedPendingLength);
+
+            function generator() {
+                return function () {
+                    new vow.Promise(function (resolve) {
+                        setTimeout(function () {
+                            resolve();
+                        }, 100);
+                    });
+                };
+            }
+
+            function check() {
+                pendingNumber--;
+                if (pendingNumber < 0) {
+                    return;
+                }
+                expect(queue.getPendingLength()).to.be.eql(pendingNumber);
+                if (pendingNumber === 0) {
+                    done();
+                }
+            }
+
+            // Note: extra promises will be moved to a queue
+            for (var i = 0; i < expectedPendingLength * 2; i++) {
+                queue.add(generator()).then(check).then(null, done);
+            }
+
+            // Should synchronously increase pending counter
+            expect(queue.getPendingLength()).to.be.eql(expectedPendingLength);
+        });
+
+    });
+
+    describe('getQueueLength', function () {
+
+        it('returns number of queued promises', function (done) {
+            var maxPending = 1;
+            var expectedQueueLength = 9;
+            var queue = new Queue(maxPending);
+
+            function generator() {
+                return function () {
+                    new vow.Promise(function (resolve) {
+                        setTimeout(function () {
+                            resolve();
+                        }, 100);
+                    });
+                };
+            }
+
+            function check() {
+                expectedQueueLength--;
+                if (expectedQueueLength < 0) {
+                    return;
+                }
+                expect(queue.getQueueLength()).to.be.eql(expectedQueueLength);
+                if (expectedQueueLength === 0) {
+                    return done();
+                }
+            }
+
+            // Note: extra promises will be moved to a queue
+            for (var i = 0; i <= expectedQueueLength; i++) {
+                queue.add(generator()).then(check).then(null, done);
+            }
+
+            // Should synchronously increase queue counter
+            expect(queue.getQueueLength()).to.be.eql(expectedQueueLength);
+            expectedQueueLength = expectedQueueLength - 1;
+        });
+
+    });
 });
