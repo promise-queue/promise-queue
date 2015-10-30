@@ -1,37 +1,37 @@
 {
-    "author" : "Mikhail Davydov <i@azproduction.ru>",
-    "description" : "Promise-based queue",
-    "name" : "promise-queue",
-    "version" : "2.1.1",
-    "contributors" : [
-        {
-            "name": "Mikhail Davydov",
-            "email": "i@azproduction.ru"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/azproduction/promise-queue.git"
-    },
-    "engines" : {
-        "node": ">= 0.8.0"
-    },
-    "devDependencies" : {
-        "jshint": "2.1.3",
-        "mocha": "1.11.0",
-        "jscs": "1.0.0",
-        "istanbul": "0.1.39",
-        "chai": "*",
-        "sinon": "*",
-        "vow": "0.4.1",
-        "sinon-chai": "*",
-        "mocha-istanbul": "*",
-        "coveralls": "*"
-    },
-    "scripts": {
-        "test" : "make validate",
-        "lint": "make lint",
-        "coverage": "make coverage",
-        "clean": "make clean"
+  "author": "Mikhail Davydov <i@azproduction.ru>",
+  "description": "Promise-based queue",
+  "name": "promise-queue",
+  "version": "2.1.2",
+  "contributors": [
+    {
+      "name": "Mikhail Davydov",
+      "email": "i@azproduction.ru"
     }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/azproduction/promise-queue.git"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "devDependencies": {
+    "jshint": "2.1.3",
+    "mocha": "1.11.0",
+    "jscs": "1.0.0",
+    "istanbul": "0.1.39",
+    "chai": "*",
+    "sinon": "*",
+    "vow": "0.4.1",
+    "sinon-chai": "*",
+    "mocha-istanbul": "*",
+    "coveralls": "*"
+  },
+  "scripts": {
+    "test": "make validate",
+    "lint": "make lint",
+    "coverage": "make coverage",
+    "clean": "make clean"
+  }
 }
