@@ -260,7 +260,7 @@ describe('queue', function () {
     describe('getPendingLength', function () {
 
         it('returns number of pending promises', function (done) {
-            var expectedPendingLength = 10;
+            var expectedPendingLength = 9;
             var pendingNumber = 10;
             var queue = new Queue(expectedPendingLength);
 
@@ -287,6 +287,7 @@ describe('queue', function () {
 
             // Note: extra promises will be moved to a queue
             for (var i = 0; i < expectedPendingLength * 2; i++) {
+                // Check is after the first item is complete, so it should always be one less.
                 queue.add(generator()).then(check).then(null, done);
             }
 
@@ -315,6 +316,7 @@ describe('queue', function () {
 
             function check() {
                 expectedQueueLength--;
+
                 if (expectedQueueLength < 0) {
                     return;
                 }
@@ -331,7 +333,6 @@ describe('queue', function () {
 
             // Should synchronously increase queue counter
             expect(queue.getQueueLength()).to.be.eql(expectedQueueLength);
-            expectedQueueLength = expectedQueueLength - 1;
         });
 
     });
