@@ -253,6 +253,72 @@ describe('queue', function () {
                 })
                 .then(done, done);
         });
+
+        it('passes exceptions', function (done) {
+            var queue = new Queue();
+
+            queue
+                .add(function () {
+                    throw new Error('Caught Exception');
+                })
+                .then(function () {
+                    throw new Error('It should be rejected');
+                }, function (error) {
+                    expect(error).to.be.instanceOf(Error);
+                    expect(error.message).to.eql('Caught Exception');
+                })
+                .then(done, done);
+        });
+
+        it('passes exceptions when second item in queue', function (done) {
+            var queue = new Queue();
+
+            queue
+                .add(function () {
+                    return new vow.Promise(function (resolve, reject, notify) {
+                        setTimeout(function () {
+                            resolve();
+                        }, 0);
+                    });
+                });
+
+            queue
+                .add(function () {
+                    throw new Error('Caught Exception');
+                })
+                .then(function () {
+                    throw new Error('It should be rejected');
+                }, function (error) {
+                    expect(error).to.be.instanceOf(Error);
+                    expect(error.message).to.eql('Caught Exception');
+                })
+                .then(done, done);
+        });
+
+        it('maintains proper order with exception', function (done) {
+            var queue = new Queue();
+            var listener = sinon.spy();
+            var listener2 = sinon.spy();
+
+            queue
+                .add(function () {
+                    throw new Error('Caught Exception');
+                })
+                .then(null, listener);
+
+            queue
+                .add(function () {
+                    return new vow.Promise(function (resolve, reject, notify) {
+                        setTimeout(function () {
+                            resolve();
+                        }, 0);
+                    });
+                })
+                .then(listener)
+                .then(function() {
+                    expect(listener).to.have.been.calledBefore(listener2);
+                }).then(done, done);
+        });
     });
 
     describe('getPendingLength', function () {
