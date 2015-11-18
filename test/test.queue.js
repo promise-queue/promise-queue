@@ -67,9 +67,16 @@ describe('queue export', function () {
 });
 
 describe('queue.configure()', function () {
+
     beforeEach(function () {
+        // In case Promise exists natively (nodejs > 0.11.11)
+        delete global.Promise;
         clean();
         reset();
+    });
+
+    afterEach(function () {
+        delete global.Promise;
     });
 
     it('queue.add().then() should throw an exception if queue is not configured', function () {
@@ -79,15 +86,6 @@ describe('queue.configure()', function () {
                 return vow.fulfill(true);
             }).then(function () {});
         }).to.throw(Error);
-    });
-
-    beforeEach(function () {
-        clean();
-        reset();
-    });
-
-    afterEach(function () {
-        delete global.Promise;
     });
 
     it('queue.add().then() should not throw an exception if global Promise exists', function () {
@@ -280,6 +278,7 @@ describe('queue', function () {
                     return;
                 }
                 expect(queue.getPendingLength()).to.be.eql(pendingNumber);
+
                 if (pendingNumber === 0) {
                     done();
                 }
@@ -288,7 +287,7 @@ describe('queue', function () {
             // Note: extra promises will be moved to a queue
             for (var i = 0; i < expectedPendingLength * 2; i++) {
                 // Check is after the first item is complete, so it should always be one less.
-                queue.add(generator()).then(check).then(null, done);
+                queue.add(generator()).then(check).done();
             }
 
             // Should synchronously increase pending counter
@@ -328,7 +327,7 @@ describe('queue', function () {
 
             // Note: extra promises will be moved to a queue
             for (var i = 0; i <= expectedQueueLength; i++) {
-                queue.add(generator()).then(check).then(null, done);
+                queue.add(generator()).then(check).done();
             }
 
             // Should synchronously increase queue counter
