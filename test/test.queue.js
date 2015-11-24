@@ -67,9 +67,16 @@ describe('queue export', function () {
 });
 
 describe('queue.configure()', function () {
+
     beforeEach(function () {
+        // In case Promise exists natively (nodejs > 0.11.11)
+        delete global.Promise;
         clean();
         reset();
+    });
+
+    afterEach(function () {
+        delete global.Promise;
     });
 
     it('queue.add().then() should throw an exception if queue is not configured', function () {
@@ -79,15 +86,6 @@ describe('queue.configure()', function () {
                 return vow.fulfill(true);
             }).then(function () {});
         }).to.throw(Error);
-    });
-
-    beforeEach(function () {
-        clean();
-        reset();
-    });
-
-    afterEach(function () {
-        delete global.Promise;
     });
 
     it('queue.add().then() should not throw an exception if global Promise exists', function () {
@@ -255,12 +253,78 @@ describe('queue', function () {
                 })
                 .then(done, done);
         });
+
+        it('passes exceptions', function (done) {
+            var queue = new Queue();
+
+            queue
+                .add(function () {
+                    throw new Error('Caught Exception');
+                })
+                .then(function () {
+                    throw new Error('It should be rejected');
+                }, function (error) {
+                    expect(error).to.be.instanceOf(Error);
+                    expect(error.message).to.eql('Caught Exception');
+                })
+                .then(done, done);
+        });
+
+        it('passes exceptions when second item in queue', function (done) {
+            var queue = new Queue();
+
+            queue
+                .add(function () {
+                    return new vow.Promise(function (resolve, reject, notify) {
+                        setTimeout(function () {
+                            resolve();
+                        }, 0);
+                    });
+                });
+
+            queue
+                .add(function () {
+                    throw new Error('Caught Exception');
+                })
+                .then(function () {
+                    throw new Error('It should be rejected');
+                }, function (error) {
+                    expect(error).to.be.instanceOf(Error);
+                    expect(error.message).to.eql('Caught Exception');
+                })
+                .then(done, done);
+        });
+
+        it('maintains proper order with exception', function (done) {
+            var queue = new Queue();
+            var listener = sinon.spy();
+            var listener2 = sinon.spy();
+
+            queue
+                .add(function () {
+                    throw new Error('Caught Exception');
+                })
+                .then(null, listener);
+
+            queue
+                .add(function () {
+                    return new vow.Promise(function (resolve, reject, notify) {
+                        setTimeout(function () {
+                            resolve();
+                        }, 0);
+                    });
+                })
+                .then(listener)
+                .then(function() {
+                    expect(listener).to.have.been.calledBefore(listener2);
+                }).then(done, done);
+        });
     });
 
     describe('getPendingLength', function () {
 
         it('returns number of pending promises', function (done) {
-            var expectedPendingLength = 10;
+            var expectedPendingLength = 9;
             var pendingNumber = 10;
             var queue = new Queue(expectedPendingLength);
 
@@ -280,6 +344,7 @@ describe('queue', function () {
                     return;
                 }
                 expect(queue.getPendingLength()).to.be.eql(pendingNumber);
+
                 if (pendingNumber === 0) {
                     done();
                 }
@@ -287,7 +352,8 @@ describe('queue', function () {
 
             // Note: extra promises will be moved to a queue
             for (var i = 0; i < expectedPendingLength * 2; i++) {
-                queue.add(generator()).then(check).then(null, done);
+                // Check is after the first item is complete, so it should always be one less.
+                queue.add(generator()).then(check).done();
             }
 
             // Should synchronously increase pending counter
@@ -315,6 +381,7 @@ describe('queue', function () {
 
             function check() {
                 expectedQueueLength--;
+
                 if (expectedQueueLength < 0) {
                     return;
                 }
@@ -326,12 +393,11 @@ describe('queue', function () {
 
             // Note: extra promises will be moved to a queue
             for (var i = 0; i <= expectedQueueLength; i++) {
-                queue.add(generator()).then(check).then(null, done);
+                queue.add(generator()).then(check).done();
             }
 
             // Should synchronously increase queue counter
             expect(queue.getQueueLength()).to.be.eql(expectedQueueLength);
-            expectedQueueLength = expectedQueueLength - 1;
         });
 
     });
