@@ -4,10 +4,7 @@
   "name": "promise-queue",
   "version": "2.2.2",
   "contributors": [
-    {
-      "name": "Mikhail Davydov",
-      "email": "i@azproduction.ru"
-    }
+    "Mikhail Davydov <i@azproduction.ru>"
   ],
   "repository": {
     "type": "git",
@@ -33,5 +30,15 @@
     "lint": "make lint",
     "coverage": "make coverage",
     "clean": "make clean"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/azproduction/promise-queue/issues"
+  },
+  "homepage": "https://github.com/azproduction/promise-queue#readme",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "license": "MIT"
 }
