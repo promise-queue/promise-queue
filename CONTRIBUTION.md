@@ -2,7 +2,7 @@
 
 This document describes some points about contribution process for promise-queue package.
 
-The maintainer of the project is Mikhail Davydov (i@azproduction.ru).
+The maintainer of the project is Mikhail Davydov (i@azproduction.me).
 
 The project is being developed within community. Maintainer merges pull-requests, fixes critical bugs.
 
