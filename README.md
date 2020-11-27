@@ -1,4 +1,4 @@
-# promise-queue [![NPM Version](https://badge.fury.io/js/promise-queue.png)](https://npmjs.org/package/promise-queue) [![Build Status](https://travis-ci.org/azproduction/promise-queue.png?branch=master)](https://travis-ci.org/azproduction/promise-queue) [![Coverage Status](https://coveralls.io/repos/azproduction/promise-queue/badge.png?branch=master)](https://coveralls.io/r/azproduction/promise-queue) [![Dependency Status](https://gemnasium.com/azproduction/promise-queue.png)](https://gemnasium.com/azproduction/promise-queue)
+# promise-queue [![NPM Version](https://badge.fury.io/js/promise-queue.png)](https://npmjs.org/package/promise-queue) [![Build Status](https://travis-ci.org/azproduction/promise-queue.png?branch=master)](https://travis-ci.org/azproduction/promise-queue) [![Coverage Status](https://coveralls.io/repos/azproduction/promise-queue/badge.png?branch=master)](https://coveralls.io/r/azproduction/promise-queue)
 
 Promise-based queue
 
